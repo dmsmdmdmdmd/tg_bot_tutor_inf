@@ -47,9 +47,9 @@ tg_bot_tutor - оператор/
 ## Setup
 
 1. **Клонировать репозиторий**:
-   ```
-   clone bash git https://github.com/dmsmdmdmdmd/tg_bot_tutor_inf.git
-   cd tg_bot_tutor_inf
+   ```bash
+   git clone https://github.com/dmsmdmdmdmd/tg_bot_tutor_inf.git
+    cd tg_bot_tutor_inf
    ```
 
 2. **Установите зависимости**:
@@ -60,7 +60,7 @@ tg_bot_tutor - оператор/
 3. **Настройте переменные окружения**:
    - Скопируйте `.env.example` в `.env`:
      ```bash
-    cp .env.example .env
+     cp .env.example .env
      ```
 
 4. **Подготовьте базу данных задач**:
