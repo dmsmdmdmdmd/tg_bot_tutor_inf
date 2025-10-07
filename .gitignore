@@ -1,0 +1,42 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+.rg_tutor/
+rg_tutor/
+
+# --- IDE / Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Env / Secrets ---
+.env
+
+# --- User data / storage ---
+storage/user_progress.json
+
+# --- Logs ---
+*.log
+
+# --- Cache ---
+.cache/
+*.tmp
+*.bak
+*.old
