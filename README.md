@@ -48,19 +48,19 @@ tg_bot_tutor - оператор/
 
 1. **Клонировать репозиторий**:
    ```
-   клонировать bash git https://github.com/dmsmdmdmdmd/tg_bot_tutor_inf.git
+   clone bash git https://github.com/dmsmdmdmdmd/tg_bot_tutor_inf.git
    cd tg_bot_tutor_inf
    ```
 
 2. **Установите зависимости**:
    ```bash
-   установка pip -r requirements.txt
+    pip install -r requirements.txt
    ```
 
 3. **Настройте переменные окружения**:
    - Скопируйте `.env.example` в `.env`:
      ```bash
-cp .env.example .env
+    cp .env.example .env
      ```
 
 4. **Подготовьте базу данных задач**:
@@ -73,7 +73,7 @@ cp .env.example .env
             "ответы": ["81", "81.0"]
          },
          {
-           "вопрос": "Задание 1. Перевести слово 110101 из двойной системы в повседневную".,
+           "вопрос": "Задание 1. Перевести слово 110101 из двойной системы в повседневную",
            "ответы": ["53", "53.0"]
          },
          {
