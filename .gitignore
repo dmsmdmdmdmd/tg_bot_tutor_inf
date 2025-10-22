@@ -40,3 +40,5 @@ storage/user_progress.json
 *.tmp
 *.bak
 *.old
+
+data/

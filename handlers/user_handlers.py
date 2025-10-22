@@ -1,8 +1,9 @@
 from aiogram import Router, types, F
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, FSInputFile
 from utils.data_loader import load_tasks
 from utils.progress_manager import add_solved_task, get_user_stats
+import os
 
 router = Router()
 tasks = load_tasks()
@@ -34,6 +35,27 @@ def normalize_answer(ans: str):
         return str(float(ans))
     except ValueError:
         return ans
+
+
+async def send_task(message: types.Message, task: dict):
+    """Отправляет задание с вложениями (если есть)."""
+    # Сначала отправляем вложения
+    for attachment in task.get("attachments", []):
+        path = attachment.get("path")
+        if not path or not os.path.exists(path):
+            print(f"⚠️ Вложение не найдено: {path}")
+            continue
+
+        try:
+            if attachment.get("type") == "image":
+                await message.answer_photo(photo=FSInputFile(path))
+            elif attachment.get("type") == "file":
+                await message.answer_document(document=FSInputFile(path))
+        except Exception as e:
+            print(f"⚠️ Ошибка при отправке файла {path}: {e}")
+
+    # Затем отправляем сам вопрос
+    await message.answer(f"📘 {task['question']}", reply_markup=get_navigation_keyboard())
 
 # ---------- Команды ----------
 
@@ -87,9 +109,8 @@ async def select_task(message: types.Message):
         return
 
     user_state[user_id] = {"task_number": text, "index": 0}
-    question = tasks[text][0]["question"]
-
-    await message.answer(f"📘 {question}", reply_markup=get_navigation_keyboard())
+    task = tasks[text][0]
+    await send_task(message, task)
 
 @router.message(F.text == "→")
 async def next_task(message: types.Message):
@@ -101,9 +122,8 @@ async def next_task(message: types.Message):
     state = user_state[user_id]
     task_number = state["task_number"]
     state["index"] = (state["index"] + 1) % len(tasks[task_number])
-    question = tasks[task_number][state["index"]]["question"]
-
-    await message.answer(f"📘 {question}", reply_markup=get_navigation_keyboard())
+    task = tasks[task_number][state["index"]]
+    await send_task(message, task)
 
 @router.message(F.text == "←")
 async def prev_task(message: types.Message):
@@ -115,9 +135,8 @@ async def prev_task(message: types.Message):
     state = user_state[user_id]
     task_number = state["task_number"]
     state["index"] = (state["index"] - 1) % len(tasks[task_number])
-    question = tasks[task_number][state["index"]]["question"]
-
-    await message.answer(f"📘 {question}", reply_markup=get_navigation_keyboard())
+    task = tasks[task_number][state["index"]]
+    await send_task(message, task)
 
 @router.message(F.text == "Отмена")
 async def cancel_task(message: types.Message):
@@ -134,8 +153,8 @@ async def continue_or_change(message: types.Message):
             await message.answer("Сначала выбери задание.")
             return
         task_number = state["task_number"]
-        question = tasks[task_number][state["index"]]["question"]
-        await message.answer(f"📘 {question}", reply_markup=get_navigation_keyboard())
+        task = tasks[task_number][state["index"]]
+        await send_task(message, task)
     else:
         user_state.pop(user_id, None)
         await message.answer("Введите номер нового задания (1–27):", reply_markup=ReplyKeyboardRemove())
